@@ -1,22 +1,27 @@
 <style>
   #prog {
-  width: 400px;
-  border: 1px solid red;
-  height: 20px;
+    width: 400px;
+    border: 1px solid red;
+    height: 20px;
   }
   #bar {
-  width: 0px;
-  background-color: blue;
-  height: 20px;
+    width: 0px;
+    background-color: blue;
+    height: 20px;
   }
-  </style>
-  <h3>Image Croping</h3>
-  <div id="imgpl">Image not ready. Please wait.
+</style>
+<h3>Image Croping</h3>
+<div id="imgpl">Image not ready. Please wait.</div>
+<div id="wrapper">
+  <div id="prog"><div id="bar"></div></div>
+</div>
+<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
 
-  </div>
-  <div id="wrapper"><div id="prog"><div id="bar"></div></div></div>
-  <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
-  <script>
+<!-- ------------------------------- -->
+<!-- Old Code -->
+<!-- ------------------------------- -->
+
+<!-- <script>
 
 var end_file;
   function poll() {
@@ -48,4 +53,4 @@ var end_file;
       poll();
   
   });
-  </script>
+  </script> -->

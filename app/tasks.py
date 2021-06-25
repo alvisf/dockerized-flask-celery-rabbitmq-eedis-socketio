@@ -8,9 +8,11 @@ from io import BytesIO
 from celery import Celery, current_task
 from celery.result import AsyncResult
 
-from PIL import Image  
+from PIL import Image
 import os
 import time
+
+import socketio
 
 REDIS_URL = 'redis://redis:6379/0'
 BROKER_URL = 'amqp://admin:mypass@rabbit//'
@@ -22,6 +24,7 @@ CELERY = Celery('tasks',
 CELERY.conf.accept_content = ['json', 'msgpack']
 CELERY.conf.result_serializer = 'msgpack'
 
+
 def get_job(job_id):
     '''
     To be called from our web app.
@@ -29,24 +32,39 @@ def get_job(job_id):
     '''
     return AsyncResult(job_id, app=CELERY)
 
-@CELERY.task()
+
+@sio.event
+def message(data):
+    print('message received with ', data)
+    sio.emit('my response', {'response': 'my response'})
+    return True
+
+
+def sockerio_push():
+    message("hello world")
+    return True
+
+
+@CELERY.task(on_success=sockerio_push)
 def image_demension(img):
     time.sleep(2)
-    im = Image.open(img)  
-    width, height = im.size  
+    im = Image.open(img)
+    width, height = im.size
     left = 4
     top = height / 5
     right = 154
     bottom = 3 * height / 5
 
     # Cropped image of above dimension  \
-    im1 = im.crop((left, top, right, bottom)) 
-    newsize = (300, 300) 
-    im1 = im1.resize(newsize) 
-    width, height = im1.size  
-    location=os.path.join('static/worker-img','cropped_img.'+im.format.lower())
-    im1.save(os.path.join('static/worker-img','cropped_img.'+im.format.lower()))   
-    print(width,height)
+    im1 = im.crop((left, top, right, bottom))
+    newsize = (300, 300)
+    im1 = im1.resize(newsize)
+    width, height = im1.size
+    location = os.path.join('static/worker-img',
+                            'cropped_img.'+im.format.lower())
+    im1.save(os.path.join('static/worker-img',
+             'cropped_img.'+im.format.lower()))
+    print(width, height)
     print("pass")
 
     return location
