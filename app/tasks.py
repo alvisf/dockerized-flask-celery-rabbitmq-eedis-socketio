@@ -14,6 +14,8 @@ import time
 
 import socketio
 
+sio = socketio.Server()
+
 REDIS_URL = 'redis://redis:6379/0'
 BROKER_URL = 'amqp://admin:mypass@rabbit//'
 
@@ -36,11 +38,11 @@ def get_job(job_id):
 @sio.event
 def message(data):
     print('message received with ', data)
-    sio.emit('my response', {'response': 'my response'})
+    sio.emit('message_response', {'response': 'my response'})
     return True
 
 
-def sockerio_push():
+def sockerio_push(self, exc, task_id, args, kwargs):
     message("hello world")
     return True
 
